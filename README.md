@@ -1,85 +1,140 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Hotel Management API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Esta é uma API para gerenciamento de hotéis, desenvolvida utilizando **NestJS**. A aplicação permite o gerenciamento de usuários, reservas, quartos, cidades e hotéis, além de fornecer funcionalidades de autenticação e geolocalização.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Tecnologias utilizadas
 
-## Description
+- [NestJS](https://nestjs.com/)
+- [TypeORM](https://typeorm.io/) ou [Prisma](https://www.prisma.io/) (para ORM)
+- [PostgreSQL](https://www.postgresql.org/) (banco de dados)
+- [Docker](https://www.docker.com/) (para containers e deploy)
+- [JWT](https://jwt.io/) (para autenticação)
+- [Passport](http://www.passportjs.org/) (para estratégias de autenticação)
+- [API externa de Geolocalização](https://developer.mapquest.com/) (para cálculo de distâncias)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Funcionalidades da API
 
-## Project setup
+A API oferece funcionalidades para dois tipos de usuários: **Usuários Comuns** e **Administradores**. As rotas abaixo especificam quais funcionalidades estão disponíveis para cada tipo de usuário.
+
+| Rota          | Método | Funcionalidade para Usuários   | Funcionalidade para Administradores  |
+|---------------|--------|-------------------------------|--------------------------------------|
+| `/`           | GET    | Retorna uma mensagem de status "Online" da API. | Retorna uma mensagem de status "Online" da API. |
+| `/login`      | POST   | Faz login na API.              | Faz login na API.                   |
+| `/user`       | GET    | -                             | Retorna todos os usuários.          |
+| `/user`       | POST   | Cria um novo usuário.          | Cria um novo usuário.               |
+| `/booking`    | POST   | Registra uma reserva em um quarto. | Registra uma reserva em um quarto.  |
+| `/city`       | GET    | Retorna todas as cidades.      | Retorna todas as cidades.           |
+| `/hotel`      | GET    | Retorna todos os hotéis.       | Retorna todos os hotéis.            |
+| `/room/{id}`  | GET    | Retorna informações de um quarto com o ID especificado. | Retorna informações de um quarto com o ID especificado. |
+| `/room`       | POST   | -                             | Cria um novo quarto.                |
+| `/room/{id}`  | DELETE | -                             | Deleta um quarto pelo ID.           |
+| `/hotel`      | POST   | -                             | Cria um novo hotel.                 |
+| `/city`       | POST   | -                             | Cria uma nova cidade.               |
+| `/city/{id}`  | PUT    | -                             | Edita uma cidade existente.         |
+| `/geo/status` | GET    | Retorna o status da API externa responsável pela geolocalização. | Retorna o status da API externa responsável pela geolocalização. |
+| `/geo/address`| GET    | Retorna hotéis ordenados por distância de um endereço. | Retorna hotéis ordenados por distância de um endereço. |
+
+## Requisitos da API
+
+### 1. **Autenticação e Autorização**
+
+- Implementar **JWT** para autenticação.
+- Proteger rotas administrativas com **Guards** que verifiquem o tipo de usuário (administrador).
+- Implementar a funcionalidade de login na rota `/login`.
+
+### 2. **Usuários**
+
+- Criar, listar e gerenciar usuários.
+- Usuários comuns podem criar uma conta.
+- Apenas administradores podem visualizar a lista de usuários.
+
+### 3. **Hotéis e Quartos**
+
+- Criar, listar e gerenciar hotéis.
+- Criar, listar e gerenciar quartos de hotéis.
+- Administradores podem adicionar, editar ou deletar hotéis e quartos.
+- Usuários podem visualizar hotéis e quartos.
+
+### 4. **Reservas**
+
+- Usuários podem criar reservas para um quarto específico em um hotel.
+- Administradores também podem registrar reservas.
+  
+### 5. **Cidades**
+
+- Criar, listar e editar informações sobre cidades.
+- Administradores podem adicionar e editar cidades.
+
+### 6. **Geolocalização**
+
+- Consultar uma API externa para obter a distância de hotéis com base em um endereço fornecido.
+- Implementar uma rota `/geo/status` para verificar o status da API externa.
+- Implementar uma rota `/geo/address` para listar hotéis ordenados pela distância do endereço fornecido.
+
+### 7. **Banco de Dados**
+
+- Utilizar **PostgreSQL** como banco de dados.
+- Implementar **TypeORM** ou **Prisma** para gerenciar as tabelas de usuários, hotéis, quartos, reservas e cidades.
+  
+### 8. **Validação e DTOs**
+
+- Utilizar **DTOs** para validação de dados nas requisições.
+- Garantir que todas as entradas de dados passem por validações antes de serem persistidas no banco.
+
+### 9. **Testes**
+
+- Implementar testes unitários para as funções principais da API.
+- Criar testes de integração para validar o funcionamento correto das rotas.
+
+### 10. **Deploy com Docker**
+
+- Configurar um ambiente de desenvolvimento com Docker usando o **docker-compose.yml** para subir o banco de dados e a API.
+- Criar um **Dockerfile** para configurar a imagem de produção.
+  
+### 11. **Monitoramento e Logs**
+
+- Implementar logs para monitorar as requisições e ações importantes no servidor.
+- Integrar uma ferramenta de monitoramento como **Prometheus** ou **Grafana** (opcional).
+
+## Como rodar o projeto
+
+1. Clone o repositório:
+   ```bash
+   git clone https://github.com/seu-usuario/hotel-management.git
+   ```
+
+2. Instale as dependências:
+   ```bash
+   cd hotel-management
+   npm install
+   ```
+
+3. Configure o arquivo `.env` com suas variáveis de ambiente:
+   ```env
+   DATABASE_URL=postgres://user:password@localhost:5432/hotels
+   JWT_SECRET=sua_chave_secreta_aqui
+   ```
+
+4. Rode o Docker:
+   ```bash
+   docker-compose up
+   ```
+
+5. Rode o servidor:
+   ```bash
+   npm run start:dev
+   ```
+
+6. Acesse a API em `http://localhost:3000`.
+
+## Testes
+
+Para rodar os testes, utilize o seguinte comando:
 
 ```bash
-$ npm install
+npm run test
 ```
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Run tests
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Com este **README**, você pode acompanhar facilmente o progresso no desenvolvimento da API e verificar as rotas e funcionalidades que ainda faltam implementar.
