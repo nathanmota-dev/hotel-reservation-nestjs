@@ -9,7 +9,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -17,7 +17,6 @@ model User {
   id        Int       @id @default(autoincrement())
   email     String    @unique
   password  String
-  role      Role      @default(USER)
   bookings  Booking[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -31,7 +30,6 @@ model Booking {
   room      Room          @relation(fields: [roomId], references: [id])
   startDate DateTime
   endDate   DateTime
-  status    BookingStatus @default(PENDING) 
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
 }
@@ -65,15 +63,4 @@ model Room {
   bookings  Booking[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-}
-
-enum Role {
-  USER
-  ADMIN
-}
-
-enum BookingStatus {
-  PENDING
-  CONFIRMED
-  CANCELLED
 }
