@@ -4,7 +4,6 @@ import 'dotenv/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
-  console.log(process.env.DATABASE_URLL);
+  await app.listen(3000);  
 }
 bootstrap();
