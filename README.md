@@ -134,7 +134,3 @@ Para rodar os testes, utilize o seguinte comando:
 ```bash
 npm run test
 ```
-
----
-
-Com este **README**, você pode acompanhar facilmente o progresso no desenvolvimento da API e verificar as rotas e funcionalidades que ainda faltam implementar.
