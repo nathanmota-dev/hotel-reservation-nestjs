@@ -23,9 +23,10 @@ describe('AuthService', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    service = new AuthService();
-    (service as any).userService = userService as unknown as UserService;
-    (service as any).jwtService = jwtService as unknown as JwtService;
+    service = new AuthService(
+      userService as unknown as UserService,
+      jwtService as unknown as JwtService,
+    );
   });
 
   afterEach(() => {
@@ -36,10 +37,12 @@ describe('AuthService', () => {
     userService.user.mockResolvedValue(null);
 
     await expect(
-      service.singIn({ email: 'missing@example.com', password: 'secret' } as any),
+      service.singIn({ email: 'missing@example.com', password: 'secret' }),
     ).rejects.toBeInstanceOf(NotFoundException);
 
-    expect(userService.user).toHaveBeenCalledWith({ email: 'missing@example.com' });
+    expect(userService.user).toHaveBeenCalledWith({
+      email: 'missing@example.com',
+    });
     expect(jwtService.signAsync).not.toHaveBeenCalled();
   });
 
@@ -52,10 +55,13 @@ describe('AuthService', () => {
     vi.mocked(bcrypt.compare).mockImplementation(async () => false);
 
     await expect(
-      service.singIn({ email: 'user@example.com', password: 'wrong-password' } as any),
+      service.singIn({ email: 'user@example.com', password: 'wrong-password' }),
     ).rejects.toBeInstanceOf(UnauthorizedException);
 
-    expect(bcrypt.compare).toHaveBeenCalledWith('wrong-password', 'hashed-password');
+    expect(bcrypt.compare).toHaveBeenCalledWith(
+      'wrong-password',
+      'hashed-password',
+    );
     expect(jwtService.signAsync).not.toHaveBeenCalled();
   });
 
@@ -69,10 +75,16 @@ describe('AuthService', () => {
     jwtService.signAsync.mockResolvedValue('jwt-token');
 
     await expect(
-      service.singIn({ email: 'user@example.com', password: 'correct-password' } as any),
+      service.singIn({
+        email: 'user@example.com',
+        password: 'correct-password',
+      }),
     ).resolves.toEqual({ access_token: 'jwt-token' });
 
-    expect(bcrypt.compare).toHaveBeenCalledWith('correct-password', 'hashed-password');
+    expect(bcrypt.compare).toHaveBeenCalledWith(
+      'correct-password',
+      'hashed-password',
+    );
     expect(jwtService.signAsync).toHaveBeenCalledWith({ sub: 7 });
   });
 });

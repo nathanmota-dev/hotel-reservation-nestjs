@@ -25,7 +25,7 @@ describe('UserController', () => {
     const createdUser = { id: 1, ...payload };
     userService.createUser.mockResolvedValue(createdUser);
 
-    await expect(controller.signupUser(payload as any)).resolves.toEqual(createdUser);
+    await expect(controller.signupUser(payload)).resolves.toEqual(createdUser);
 
     expect(userService.createUser).toHaveBeenCalledWith(payload);
   });
@@ -44,7 +44,9 @@ describe('UserController', () => {
     const updatedUser = { id: 6, ...payload };
     userService.updateUser.mockResolvedValue(updatedUser);
 
-    await expect(controller.updateUser(payload as any, '6')).resolves.toEqual(updatedUser);
+    await expect(controller.updateUser(payload, '6')).resolves.toEqual(
+      updatedUser,
+    );
 
     expect(userService.updateUser).toHaveBeenCalledWith({
       where: { id: 6 },

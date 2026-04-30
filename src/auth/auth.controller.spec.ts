@@ -11,8 +11,7 @@ describe('AuthController', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    controller = new AuthController();
-    (controller as any).authService = authService as unknown as AuthService;
+    controller = new AuthController(authService as unknown as AuthService);
   });
 
   it('should delegate signIn to AuthService.singIn', async () => {
@@ -22,7 +21,7 @@ describe('AuthController', () => {
     };
     authService.singIn.mockResolvedValue({ access_token: 'jwt-token' });
 
-    await expect(controller.signIn(body as any)).resolves.toEqual({
+    await expect(controller.signIn(body)).resolves.toEqual({
       access_token: 'jwt-token',
     });
 
