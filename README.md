@@ -96,6 +96,49 @@ A API oferece funcionalidades para dois tipos de usuários: **Usuários Comuns**
 - Implementar logs para monitorar as requisições e ações importantes no servidor.
 - Integrar uma ferramenta de monitoramento como **Prometheus** ou **Grafana** (opcional).
 
+## Status atual da implementação
+
+Status levantado a partir do código existente em `src` e dos arquivos auxiliares já presentes no projeto.
+
+| Tópico | Status | Observações |
+|--------|--------|-------------|
+| Status da API (`GET /`) | Implementado | A rota raiz retorna `"Online"`. |
+| Autenticação com JWT | Parcial | Existe autenticação com geração de token JWT em `POST /auth/signin`. O README original cita `/login`, mas essa rota ainda não existe com esse caminho. |
+| Guard de autenticação | Parcial | Existe `AuthGuard` para validar token Bearer. Não foi encontrado guard de autorização por papel de usuário (admin). |
+| Usuários | Parcial | Existe criação de usuário, busca por ID, atualização e remoção. Não existe listagem de usuários para admin (`GET /user`) como descrito na tabela inicial. |
+| Hotéis | Não implementado | Não há módulo, controller ou service em `src` para hotel. |
+| Quartos | Não implementado | Não há módulo, controller ou service em `src` para room. |
+| Reservas | Não implementado | Não há módulo, controller ou service em `src` para booking. |
+| Cidades | Não implementado | Não há módulo, controller ou service em `src` para city. |
+| Geolocalização | Não implementado | Não há integração com API externa nem rotas `/geo/status` e `/geo/address`. |
+| Banco de dados | Parcial | O projeto já usa Prisma e possui schema com `User`, `Booking`, `City`, `Hotel` e `Room`. Porém, o datasource atual está configurado com SQLite, não PostgreSQL. |
+| DTOs e validação | Não implementado | Os controllers usam tipos do Prisma diretamente; não foram encontrados DTOs nem validações explícitas das requisições. |
+| Testes | Parcial | Existem testes básicos de `PrismaService`, `AuthGuard` e um teste e2e inicial. Ainda não cobrem as funcionalidades principais da API. |
+| Docker / docker-compose | Não implementado | Não foi encontrado `Dockerfile` nem `docker-compose.yml` no estado atual do projeto. |
+| Logs e monitoramento | Não implementado | Não foram encontrados interceptors, middlewares ou integrações de observabilidade para esse objetivo. |
+
+## O que já foi implementado de forma prática
+
+- Estrutura base do projeto NestJS.
+- Rota raiz `GET /` retornando status da API.
+- Módulo de usuário com operações de criar, buscar por ID, atualizar e deletar.
+- Criptografia de senha com `bcrypt` no cadastro de usuário.
+- Módulo de autenticação com emissão de JWT em `POST /auth/signin`.
+- Guard para validar token JWT em requisições autenticadas.
+- Integração com Prisma via `PrismaService`.
+- Schema Prisma com entidades de usuário, reserva, cidade, hotel e quarto.
+
+## O que ainda falta para atender o README original
+
+- Implementar a rota de login no formato documentado ou ajustar definitivamente a documentação para `POST /auth/signin`.
+- Implementar autorização por perfil de usuário administrador.
+- Implementar listagem de usuários para administrador.
+- Implementar módulos de hotel, quarto, reserva, cidade e geolocalização.
+- Adicionar DTOs e validação das entradas.
+- Ajustar o banco para PostgreSQL, caso esse continue sendo o requisito oficial.
+- Criar testes mais completos para regras de negócio e rotas.
+- Adicionar configuração de Docker e monitoramento/logs.
+
 ## Como rodar o projeto
 
 1. Clone o repositório:
